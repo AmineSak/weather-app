@@ -53,7 +53,7 @@ To run the Weather Globe project locally, follow these steps:
    Open your terminal and run the following command to clone the project repository:
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/AmineSak/weather-app.git
    cd weather-globe
    ```
 
