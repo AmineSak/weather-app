@@ -61,7 +61,7 @@ To run the Weather Globe project locally, follow these steps:
 
    ```bash
    git clone https://github.com/AmineSak/weather-app.git
-   cd weather-globe
+   cd weather-app
    ```
 
 2. **Install Dependencies**:
