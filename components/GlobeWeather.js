@@ -18,13 +18,37 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { landmarks } from "@/public/landmarks";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Maximize,
+  RefreshCw,
+  HelpCircle,
+} from "lucide-react";
 import { Button } from "./ui/button";
 
 const GlobeWeather = () => {
   const globeEl = useRef();
   const containerRef = useRef();
+  const videoRef = useRef(null);
   const [weather, setWeather] = useState(null);
   const [clickedCoords, setClickedCoords] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +57,10 @@ const GlobeWeather = () => {
   const [facts, setFacts] = useState([]);
   const [factsLoading, setFactsLoading] = useState(false);
   const [factsDialogOpen, setFactsDialogOpen] = useState(false);
-
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
+  const [activeTab, setActiveTab] = useState("globe");
   const fetchFacts = async (country) => {
     setFactsLoading(true);
     setFactsDialogOpen(true);
@@ -179,51 +206,213 @@ const GlobeWeather = () => {
     return "w-80";
   }, []);
 
+  // Video control functions
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (isVideoPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsVideoPlaying(!isVideoPlaying);
+    }
+  };
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+      setIsMuted(!isMuted);
+    }
+  };
+
+  const restartVideo = () => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0;
+      videoRef.current.play();
+      setIsVideoPlaying(true);
+    }
+  };
+
+  const toggleFullscreen = () => {
+    if (videoRef.current) {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        videoRef.current.requestFullscreen();
+      }
+    }
+  };
+
   return (
     <div className="w-full min-h-screen flex flex-col items-center justify-center z-0 p-2 sm:p-4 bg-gradient-to-b from-blue-50 to-blue-100">
-      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-blue-800 mb-2 sm:mb-6 text-center">
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-blue-800 text-center">
         Interactive World Landmarks & Weather
       </h2>
+
       <p className="text-xs sm:text-sm md:text-base text-gray-600 mb-2 sm:mb-4 text-center">
         Discover famous landmarks and check local weather around the globe
       </p>
 
-      <div
-        ref={containerRef}
-        className="relative w-full max-w-4xl h-[300px] xs:h-[400px] sm:h-[500px] md:h-[600px] hover:cursor-pointer"
+      <Tabs
+        defaultValue="globe"
+        className="w-full max-w-4xl"
+        value={activeTab}
+        onValueChange={setActiveTab}
       >
-        <Globe
-          ref={globeEl}
-          globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
-          bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
-          onGlobeClick={handleGlobeClick}
-          atmosphereAltitude={0.25}
-          enablePointerInteraction={true}
-          animateIn={true}
-          width={dimensions.width}
-          height={dimensions.height}
-          backgroundColor="rgba(0,0,0,0)"
-          // Points configuration
-          pointsData={landmarks}
-          pointLat="lat"
-          pointLng="lng"
-          pointColor="color"
-          pointAltitude={0.1}
-          pointRadius={0.25}
-          pointsMerge={false}
-          pointLabel={(d) => `${d.name}, ${d.country}`}
-          onPointClick={handleLandmarkClick}
-          // Point label styling
-          pointLabelSize={10}
-          pointLabelDotRadius={1}
-          pointLabelHoverColor={() => "white"}
-          pointLabelHoverBgColor={(d) => d.color}
-        />
-      </div>
+        <TabsList className="grid w-full grid-cols-2 mb-4">
+          <TabsTrigger value="globe" className="text-sm sm:text-base">
+            Interactive Globe
+          </TabsTrigger>
+          <TabsTrigger value="video" className="text-sm sm:text-base">
+            How to Use (Demo Video)
+          </TabsTrigger>
+        </TabsList>
 
-      <div className="text-xs sm:text-sm text-gray-500 mt-2 sm:mt-4 text-center">
-        Click on a landmark or any location to check the local weather
-      </div>
+        <TabsContent
+          value="globe"
+          className="bg-white/50 rounded-xl p-2 sm:p-4 shadow-sm"
+        >
+          <div
+            ref={containerRef}
+            className="relative w-full h-[300px] xs:h-[400px] sm:h-[500px] md:h-[600px] hover:cursor-pointer rounded-lg overflow-hidden"
+          >
+            <Globe
+              ref={globeEl}
+              globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+              bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
+              onGlobeClick={handleGlobeClick}
+              atmosphereAltitude={0.25}
+              enablePointerInteraction={true}
+              animateIn={true}
+              width={dimensions.width}
+              height={dimensions.height}
+              backgroundColor="rgba(0,0,0,0)"
+              // Points configuration
+              pointsData={landmarks}
+              pointLat="lat"
+              pointLng="lng"
+              pointColor="color"
+              pointAltitude={0.1}
+              pointRadius={0.25}
+              pointsMerge={false}
+              pointLabel={(d) => `${d.name}, ${d.country}`}
+              onPointClick={handleLandmarkClick}
+              // Point label styling
+              pointLabelSize={10}
+              pointLabelDotRadius={1}
+              pointLabelHoverColor={() => "white"}
+              pointLabelHoverBgColor={(d) => d.color}
+            />
+          </div>
+          <div className="text-xs sm:text-sm text-gray-500 mt-2 text-center">
+            Click on a landmark or any location to check the local weather
+          </div>
+        </TabsContent>
+
+        <TabsContent
+          value="video"
+          className="bg-white/50 rounded-xl p-2 sm:p-4 shadow-sm"
+        >
+          <Card className="border-none shadow-sm bg-white/80 backdrop-blur-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg sm:text-xl text-blue-800">
+                How to Use the Interactive Globe
+              </CardTitle>
+              <CardDescription>
+                Watch this quick demo to learn how to navigate the globe, find
+                landmarks, and check weather data
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="relative rounded-lg overflow-hidden aspect-video">
+                <video
+                  ref={videoRef}
+                  className="w-full h-full object-cover"
+                  poster="/demo-preview.png"
+                  onPlay={() => setIsVideoPlaying(true)}
+                  onPause={() => setIsVideoPlaying(false)}
+                  onEnded={() => setIsVideoPlaying(false)}
+                >
+                  <source src="/demo.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+
+                {/* Video overlay with controls (appears on hover or when video is paused) */}
+                <div
+                  className={`absolute inset-0 bg-black/30 flex items-center justify-center transition-opacity duration-300 ${
+                    isVideoPlaying
+                      ? "opacity-0 hover:opacity-100"
+                      : "opacity-100"
+                  }`}
+                >
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="bg-white/20 backdrop-blur-sm border-white/40 hover:bg-white/30 text-white mx-1"
+                    onClick={togglePlay}
+                  >
+                    {isVideoPlaying ? (
+                      <Pause className="h-8 w-8" />
+                    ) : (
+                      <Play className="h-8 w-8" />
+                    )}
+                  </Button>
+                </div>
+
+                {/* Bottom control bar that remains always visible */}
+                <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 bg-gradient-to-t from-black/70 to-transparent">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-white hover:bg-white/20"
+                        onClick={togglePlay}
+                      >
+                        {isVideoPlaying ? (
+                          <Pause className="h-5 w-5" />
+                        ) : (
+                          <Play className="h-5 w-5" />
+                        )}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-white hover:bg-white/20"
+                        onClick={toggleMute}
+                      >
+                        {isMuted ? (
+                          <VolumeX className="h-5 w-5" />
+                        ) : (
+                          <Volume2 className="h-5 w-5" />
+                        )}
+                      </Button>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-white hover:bg-white/20"
+                        onClick={restartVideo}
+                      >
+                        <RefreshCw className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-white hover:bg-white/20"
+                        onClick={toggleFullscreen}
+                      >
+                        <Maximize className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
       {/* shadcn Drawer Component with responsive sizing */}
       <Drawer open={isOpen} onOpenChange={setIsOpen} direction="left">
