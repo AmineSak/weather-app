@@ -73,22 +73,14 @@ To run the Weather Globe project locally, follow these steps:
 
 ### Running the Application
 
-1. **Set Environment Variables**:
-   Create a `.env.local` file in the root of your project and add your API keys:
-
-   ```plaintext
-   NEXT_PUBLIC_OPEN_ROUTER_API_KEY=your_open_router_api_key
-   WEATHERSTACK_API_KEY=your_weatherstack_api_key
-   ```
-
-2. **Start the Development Server**:
+1. **Start the Development Server**:
    In the terminal, run the following command to start the Next.js development server:
 
    ```bash
    npm run dev
    ```
 
-3. **Open in Browser**:
+2. **Open in Browser**:
    Once the server is running, open your web browser and navigate to `http://localhost:3000` to view the application.
 
 ### Testing the Application
