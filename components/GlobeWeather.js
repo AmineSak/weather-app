@@ -226,7 +226,7 @@ const GlobeWeather = () => {
       </div>
 
       {/* shadcn Drawer Component with responsive sizing */}
-      <Drawer open={isOpen} onOpenChange={setIsOpen}>
+      <Drawer open={isOpen} onOpenChange={setIsOpen} direction="left">
         <DrawerContent className={drawerSize()}>
           <div className="mx-auto w-full">
             <DrawerHeader>
