@@ -2,15 +2,21 @@
 
 ## Overview
 
-The Weather Globe project is a web application built using **Next.js**, a popular React framework that enables server-side rendering and static site generation. This application provides an interactive globe interface that displays real-time weather data based on user-selected locations. Users can click on the globe to retrieve weather information for specific coordinates, making it an engaging way to visualize weather patterns around the world.
+The AI Globe project is a web application built using **Next.js**, a popular React framework that enables server-side rendering and static site generation. This application provides an interactive globe interface that displays real-time weather data based on user-selected locations. Users can click on the globe to retrieve weather information for specific coordinates, making it an engaging way to visualize weather patterns around the world. And also use an AI model in order to generate 5 facts about the selected country.
 
 ### Key Features
 
 - **Interactive Globe**: Users can click on different locations on the globe to fetch and display weather data.
-- **Real-time Weather Data**: The application retrieves current weather information from an external API based on the selected coordinates.
+- **Real-time Weather Data**: The application retrieves current weather information from the Weatherstack API based on the selected coordinates.
 - **Responsive Design**: The application is designed to be responsive, ensuring a good user experience on various devices.
+- **Fact Generation**: Users can generate interesting facts about the selected country using the OpenRouter API, enhancing the educational aspect of the application.
 
-## Project Structure
+### APIs Used
+
+- **Weatherstack API**: This API is used to fetch real-time weather data based on latitude and longitude coordinates. It provides information such as temperature, humidity, wind speed, pressure, and visibility.
+- **OpenRouter API**: This API is utilized to generate facts about the selected country, providing users with additional context and information related to their chosen location.
+
+### Project Structure
 
 The project consists of several key files and directories:
 
@@ -37,6 +43,7 @@ The project consists of several key files and directories:
 - **React**: JavaScript library for building user interfaces.
 - **Tailwind CSS**: Utility-first CSS framework for styling.
 - **Weatherstack API**: External API used to fetch weather data.
+- **OpenRouter API**: AI API used to generate facts about countries.
 
 ## Getting Started
 
@@ -66,16 +73,25 @@ To run the Weather Globe project locally, follow these steps:
 
 ### Running the Application
 
-1. **Start the Development Server**:
+1. **Set Environment Variables**:
+   Create a `.env.local` file in the root of your project and add your API keys:
+
+   ```plaintext
+   NEXT_PUBLIC_OPEN_ROUTER_API_KEY=your_open_router_api_key
+   WEATHERSTACK_API_KEY=your_weatherstack_api_key
+   ```
+
+2. **Start the Development Server**:
    In the terminal, run the following command to start the Next.js development server:
 
    ```bash
    npm run dev
    ```
 
-2. **Open in Browser**:
+3. **Open in Browser**:
    Once the server is running, open your web browser and navigate to `http://localhost:3000` to view the application.
 
 ### Testing the Application
 
 - Click on different locations on the globe to see the weather data for those coordinates.
+- Generate facts about the selected country to learn more about it.
