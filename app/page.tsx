@@ -1,7 +1,7 @@
 // pages/index.js
 
 import Head from "next/head";
-import GlobeWeather from "./components/GlobeWeather";
+import GlobeWeather from "@/components/GlobeWeather";
 
 export default function Home() {
   return (

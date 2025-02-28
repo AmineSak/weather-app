@@ -28,7 +28,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "app/api/weather.js",
-    "app/components/GlobeWeather.js"
+    "components/GlobeWeather.js"
   ],
   "exclude": ["node_modules"]
 }
